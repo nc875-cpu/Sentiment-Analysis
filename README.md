@@ -42,3 +42,21 @@ ML models perform well on smaller datasets.
 LSTM captures context and performs best with larger datasets.
 Helps understand public opinion on the iPhone 17 from Reddit posts.
 
+
+SCRAPING FOR DATA
+
+•	Fetch Reddit posts about iPhone 17 using PRAW (Reddit API)
+
+•	Clean and preprocess text (lowercasing, removing URLs/mentions/punctuation, lemmatization, stopwords removal)
+
+•	Perform lexicon-based sentiment analysis (VADER + TextBlob)
+
+•	Train machine learning models (Naive Bayes, Logistic Regression, SVM) for sentiment classification
+
+•	Build deep learning LSTM/BiLSTM models for context-aware sentiment detection
+
+•	Visualize model performance
+
+•	Save processed data and sentiment results to CSV
+
+
