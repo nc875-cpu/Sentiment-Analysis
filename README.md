@@ -19,20 +19,29 @@ The title column is used for sentiment analysis, it has the reviews left by the 
 
 Features
 
-Data Cleaning & Preprocessing: Lowercasing, URL/mention removal, punctuation removal, stopword removal, lemmatization
+Data Cleaning & Preprocessing: Lowercasing, URL/mention removal, punctuation removal, stopword removal, lemmatization.
+
 Lexicon-Based Sentiment: VADER and TextBlob scoring
+
 Machine Learning Models: Naive Bayes, Logistic Regression, Linear SVM with TF-IDF features
+
 Deep Learning Model: LSTM with Embedding layer for contextual sentiment analysis
+
 Visualization: Model accuracy comparison plots
+
 Results: Saved as iphone17_sentiment_results.csv
 
 
 Output
 
 Sentiment labels for each post (positive / negative)
+
 Machine learning model performance metrics
+
 LSTM model accuracy
+
 Accuracy comparison plot
+
 CSV file with sentiment results: iphone17_sentiment_results.csv
 
 
@@ -40,8 +49,11 @@ CSV file with sentiment results: iphone17_sentiment_results.csv
 Insights
 
 Lexicon methods give a quick overview of overall sentiment.
+
 ML models perform well on smaller datasets.
+
 LSTM captures context and performs best with larger datasets.
+
 Helps understand public opinion on the iPhone 17 from Reddit posts.
 
 
