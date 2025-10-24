@@ -11,8 +11,10 @@ This project performs sentiment analysis on Reddit posts about the iPhone 17 usi
 Dataset
 
 Source: Reddit iPhone 17 Posts CSV
+
 Columns include: id, title, author, created_utc, score, upvote_ratio, subreddit, permalink, url
-The title column is used for sentiment analysis.
+
+The title column is used for sentiment analysis, it has the reviews left by the users.
 
 
 Features
