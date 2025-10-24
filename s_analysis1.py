@@ -1,9 +1,8 @@
 # SENTIMENT ANALYSIS OF IPHONE 17 REDDIT POSTS USING NLP
 
-importing libraries
-"""
+#importing libraries
+#Sentiment
 
-!pip install vaderSentiment
 
 import pandas as pd
 import numpy as np
