@@ -1,7 +1,7 @@
 # SENTIMENT ANALYSIS OF IPHONE 17 REDDIT POSTS USING NLP
 
 Importing Libraries
-"""
+
 
 !pip install vaderSentiment
 
@@ -36,7 +36,7 @@ import plotly.express as px
 nltk.download('stopwords')   #Downloading NLTK Resources
 nltk.download('wordnet')
 
-"""Load Uploaded Dataset"""
+#Load Uploaded Dataset
 
 url = "https://raw.githubusercontent.com/nc875-cpu/Sentiment-Analysis/main/iphone17_reddit__country.csv"
 df = pd.read_csv(url, encoding='utf-8', on_bad_lines='skip')
@@ -49,7 +49,7 @@ df.head()
 print("Column names in your dataset:")
 print(list(df.columns))
 
-"""Automatic column detection"""
+#Automatic column detection
 
 text_col = None
 country_col = None
@@ -74,12 +74,12 @@ if country_col is None:
 print(f"Detected text column: {text_col}")
 print(f"Detected country column: {country_col}")
 
-"""Keeping and renaming the required columns"""
+#Keeping and renaming the required columns
 
 df = df.rename(columns={text_col: 'post', country_col: 'country'})
 df = df[['post','country']].dropna().reset_index(drop=True)
 
-"""Text pre-processing"""
+#Text pre-processing
 
 simple_stopwords = {
     "a","about","above","after","again","against","all","am","an","and","any","are","as","at","be","because","been",
@@ -107,7 +107,7 @@ def preprocess(text):
 
 df['clean_post'] = df['post'].apply(preprocess)
 
-"""Sentiment Analysis using VADER+TEXTBLOB"""
+#Sentiment Analysis using VADER+TEXTBLOB
 
 analyzer = SentimentIntensityAnalyzer()
 
@@ -126,7 +126,7 @@ df['sentiment'] = df['clean_post'].apply(hybrid_sentiment)
 print("\nSentiment Distribution:")
 print(df['sentiment'].value_counts())
 
-"""Lexicon-Based Sentiment Analysis VADER + TextBlob"""
+#Lexicon-Based Sentiment Analysis VADER + TextBlob
 
 analyzer = SentimentIntensityAnalyzer()
 
@@ -157,7 +157,7 @@ print(df['vader_sentiment'].value_counts())
 print("\nLexicon-Based Sentiment Counts (TextBlob):")
 print(df['textblob_sentiment'].value_counts())
 
-"""data prep for ML models"""
+#data prep for ML models
 
 # Using the results from TextBlob as pseudo labels
 df['label'] = df['textblob_sentiment']
@@ -194,7 +194,7 @@ ml_results = pd.DataFrame(results, columns=["Model", "Accuracy", "Precision", "R
 print("\nMachine Learning Results:")
 print(ml_results)
 
-"""Text encoding for LSTM"""
+#Text encoding for LSTM
 
 from sklearn.preprocessing import LabelEncoder
 from tensorflow.keras.utils import to_categorical
@@ -217,7 +217,7 @@ X_pad = pad_sequences(X_seq, maxlen=100, padding="post", truncating="post")
 # Train-test split
 X_train, X_test, y_train, y_test = train_test_split(X_pad, y_categorical, test_size=0.2, random_state=42)
 
-"""Build LSTM model"""
+#Building LSTM model
 
 vocab_size = 10000
 embedding_dim = 128
@@ -240,7 +240,7 @@ model.summary()
 
 history = model.fit(X_train, y_train, epochs=10, batch_size=64, validation_split=0.2, verbose=1)
 
-"""Evaluation of the model"""
+#Evaluation of the model
 
 y_pred_probs = model.predict(X_test)
 y_pred = np.argmax(y_pred_probs, axis=1)
@@ -264,7 +264,7 @@ plt.title("Training & Validation Accuracy (LSTM)")
 plt.legend()
 plt.show()
 
-"""comparision of LSTM vs RULE BASED sentiment"""
+#comparision of LSTM vs RULE BASED sentiment
 
 df["lstm_pred"] = model.predict(X_pad).argmax(axis=1)
 df["lstm_sentiment"] = le.inverse_transform(df["lstm_pred"])
@@ -294,7 +294,7 @@ fig = px.choropleth(
 )
 fig.show()
 
-"""Visualization of all the distributed sentiments"""
+#Visualization of all the distributed sentiments
 
 plt.figure(figsize=(7,4))
 sns.countplot(x='sentiment', data=df, order=['positive','neutral','negative'], palette=['#2ca02c','#1f77b4','#d62728'])
@@ -310,7 +310,7 @@ plt.title('Sentiment Percentage Distribution')
 plt.ylabel('')
 plt.show()
 
-"""frequently used words"""
+#frequently used words
 
 def get_word_frequencies(sentiment_label):
     words = " ".join(df[df['sentiment'] == sentiment_label]['clean_post']).split()
@@ -321,7 +321,7 @@ for s in ['positive','negative','neutral']:
     print(f"\nTop words in {s} reviews:")
     print(get_word_frequencies(s))
 
-"""Reviews by country"""
+#Reviews by country
 
 df['country'] = df['country'].fillna('Unknown')
 sentiment_counts = df.groupby(['country','sentiment']).size().unstack(fill_value=0).reset_index()
@@ -336,7 +336,7 @@ sentiment_counts['neutral_percent'] = (sentiment_counts['neutral'] / sentiment_c
 print("\nSentiment by Country:")
 print(sentiment_counts.head())
 
-"""Chloropleth maps"""
+#Chloropleth maps
 
 fig_pos = px.choropleth(
     sentiment_counts, locations='country', locationmode='country names',
@@ -399,13 +399,13 @@ sns.barplot(x='Model', y='Accuracy', data=ml_results)
 plt.title("Machine Learning Model Accuracy Comparison")
 plt.show()
 
-"""saving the results"""
+#saving the results
 
 output_path = "iphone17_sentiment_results_full.csv"
 df.to_csv(output_path, index=False)
 print(f"\n✅ Results saved to: {output_path}")
 
-"""Summary"""
+#Summary
 
 print("\n📊 SUMMARY:")
 print("- Cleaned and preprocessed Reddit text data.")
