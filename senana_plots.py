@@ -3,7 +3,7 @@
 #Importing Libraries
 
 
-pip install vaderSentiment
+#pip install vaderSentiment
 
 import pandas as pd
 import numpy as np
