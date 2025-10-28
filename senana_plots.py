@@ -336,7 +336,7 @@ sentiment_counts['neutral_percent'] = (sentiment_counts['neutral'] / sentiment_c
 print("\nSentiment by Country:")
 print(sentiment_counts.head())
 
-#Chloropleth maps
+#Choropleth maps
 
 fig_pos = px.choropleth(
     sentiment_counts, locations='country', locationmode='country names',
