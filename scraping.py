@@ -1,79 +1,39 @@
-import praw
-import csv
-import os
-import time
-from datetime import datetime
+import pandas as pd
+import numpy as np
+import random
 
-# initialize Reddit (replace values or use env vars)
-reddit = praw.Reddit(
-    client_id="nA6TJhKoxzg51kCwTlucSA",
-    client_secret="zhpqYl0w-RCwxt6hMSpf9khQsmZDfg",
-    user_agent="iphone17-scraper"
-)
+# 1. Setup the scale
+num_rows = 1000000 
 
-queries = [
-    '"iphone 17 pro max"',
-    '"iphone 17 pro"',
-    '"iphone 17"',
-    '"iPhone 17 Pro Max"',
-    '"iPhone 17"'
-]
-subreddits = ["all", "apple", "iphone", "gadgets", "technology"]
+# 2. Define the 'DNA' of your iPhone 17 dataset
+locations = ['New York, USA', 'London, UK', 'Tokyo, Japan', 'Mumbai, India', 'Sydney, Australia', 'Berlin, Germany', 'Dubai, UAE', 'Paris, France', 'Seoul, South Korea', 'Toronto, Canada']
+models = ['iPhone 17', 'iPhone 17 Air', 'iPhone 17 Pro', 'iPhone 17 Pro Max']
+sentiments = ['Positive', 'Neutral', 'Negative']
 
-# How many total unique posts you want
-target_rows = 1000
+# Templates to ensure diversity
+positive_templates = ["Love the new {model} design!", "The A19 chip is a beast.", "Best camera in {location}!", "The battery on {model} lasts forever."]
+negative_templates = ["Too expensive.", "The {model} overheating is real.", "Not much better than the 16.", "Charging speed in {location} is slow."]
+neutral_templates = ["Just got it today.", "Testing the {model} now.", "Standard Apple update.", "Wait for the sale in {location}."]
 
-# Output path: ../data/ (relative to this script in /code)
-out_path = os.path.join(os.path.dirname(__file__), "..", "data")
-os.makedirs(out_path, exist_ok=True)
-out_file = os.path.join(out_path, "iphone17_reddit.csv")
+# 3. Generate the data efficiently
+data = []
+for i in range(num_rows):
+    sentiment = np.random.choice(sentiments)
+    location = np.random.choice(locations)
+    model = np.random.choice(models)
+    
+    if sentiment == 'Positive':
+        comment = np.random.choice(positive_templates).format(model=model, location=location)
+    elif sentiment == 'Negative':
+        comment = np.random.choice(negative_templates).format(model=model, location=location)
+    else:
+        comment = np.random.choice(neutral_templates).format(model=model, location=location)
+        
+    data.append([i, location, model, comment, sentiment])
 
-fields = ["id", "title", "author", "created_utc", "score", "upvote_ratio", "subreddit", "permalink", "url"]
+# 4. Create the DataFrame and Save
+df = pd.DataFrame(data, columns=['ID', 'Location', 'Model', 'Comment', 'Sentiment'])
 
-def row_from_submission(s):
-    return {
-        "id": s.id,
-        "title": s.title,
-        "author": str(s.author) if s.author else None,
-        "created_utc": datetime.utcfromtimestamp(s.created_utc).isoformat(),
-        "score": s.score,
-        "upvote_ratio": getattr(s, "upvote_ratio", None),
-        "subreddit": str(s.subreddit),
-        "permalink": f"https://www.reddit.com{s.permalink}",
-        "url": s.url
-    }
-
-seen = set()
-written = 0
-
-with open(out_file, "w", newline="", encoding="utf-8") as f:
-    w = csv.DictWriter(f, fieldnames=fields)
-    w.writeheader()
-
-    # Loop over multiple (subreddit, query) combos to blow past single-query limits
-    for subr in subreddits:
-        for q in queries:
-            # Reddit search often caps ~1000 per query. Ask for a bit more and dedupe.
-            # 'new' + 'all' maximizes recall.
-            gen = reddit.subreddit(subr).search(q, sort="new", time_filter="all", limit=1500)
-            for s in gen:
-                if s.id in seen:
-                    continue
-                seen.add(s.id)
-                w.writerow(row_from_submission(s))
-                written += 1
-
-                if written % 100 == 0:
-                    print(f"Collected {written} unique posts so far...")
-
-                # light backoff to be polite
-                time.sleep(0.15)
-
-                if written >= target_rows:
-                    break
-            if written >= target_rows:
-                break
-        if written >= target_rows:
-            break
-
-print(f"\n✅ Done. Wrote {written} unique rows to {out_file}")
+# Export as CSV (Recommended over Excel for 1M rows)
+df.to_csv('iphone17_1M_dataset.csv', index=False)
+print("Dataset successfully created!")
